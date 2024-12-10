@@ -3,7 +3,7 @@
  * Plugin Name:       Simple Page Access Restriction
  * Plugin URI:        https://www.pluginsandsnippets.com/downloads/simple-page-access-restriction/
  * Description:       This plugin offers a simple way to restrict visits to select pages only to logged-in users and allows for page redirection to a defined (login) page of your choice.
- * Version:           1.0.29
+ * Version:           1.0.30
  * Author:            Plugins & Snippets
  * Author URI:        https://www.pluginsandsnippets.com/
  * License:           GPL v2 or later
@@ -38,11 +38,8 @@ if ( ! class_exists( 'Simple_Page_Access_Restriction' ) ) {
 		 */
 		private static $instance;
 		private static $admin_instance;
-		
-		public function __construct() {
-				
-		}
 
+		public function __construct() {}
 
 		/**
 		 * Get active instance
@@ -79,7 +76,7 @@ if ( ! class_exists( 'Simple_Page_Access_Restriction' ) ) {
 		private function setup_constants() {
 
 			// Plugin related constants
-			define( 'SIMPLE_PAGE_ACCESS_RESTRICTION_VER', '1.0.29' );
+			define( 'SIMPLE_PAGE_ACCESS_RESTRICTION_VER', '1.0.30' );
 			define( 'SIMPLE_PAGE_ACCESS_RESTRICTION_NAME', 'Simple Page Access Restriction' );
 			define( 'SIMPLE_PAGE_ACCESS_RESTRICTION_DIR', trailingslashit( plugin_dir_path( __FILE__ ) ) );
 			define( 'SIMPLE_PAGE_ACCESS_RESTRICTION_URL', plugin_dir_url( __FILE__ ) );
@@ -129,8 +126,64 @@ if ( ! class_exists( 'Simple_Page_Access_Restriction' ) ) {
 		 *
 		 */
 		private function hooks() {
-			add_action( 'template_redirect', array( $this, 'check_page_access' ), 1 );
 			add_action( 'init', array( $this, 'add_rest_api_filters' ) );
+			add_filter( 'pre_get_posts', array( $this, 'exclude_restricted_posts' ) );
+			add_action( 'template_redirect', array( $this, 'check_page_access' ), 1 );
+		}
+
+		/**
+		 * Change the GET and REST search queries
+		 * to exclude restricted posts.
+		 *
+		 * @param WP_Query $query The query.
+		 * @return WP_Query The query.
+		 */
+		public function exclude_restricted_posts( $query ) {
+			// Check if the request is for the backend.
+			if ( is_admin() ) {
+				// Return the query.
+				return $query;
+			}
+
+			// Set the restrict.
+			$restrict = false;
+
+			// Check if the request is for the main search query.
+			if ( $query->is_search && $query->is_main_query() ) {
+				// Set the restrict.
+				$restrict = true;
+			}
+
+			// Check if the request is a REST request.
+			if ( defined( 'REST_REQUEST' ) && REST_REQUEST && isset( $query->query_vars['s'] ) ) {
+				// Set the restrict.
+				$restrict = true;
+			}
+
+			// Check the restrict.
+			if ( $restrict ) {
+				// Set the meta_query.
+				$meta_query = array(
+					'relation' => 'OR',
+					array(
+						array(
+							'key'     => 'page_access_restricted',
+							'value'   => '0',
+							'compare' => '=',
+						),
+					),
+					array(
+						'key'     => 'page_access_restricted',
+						'compare' => 'NOT EXISTS',
+					),
+				);
+
+				// Set the query.
+				$query->set( 'meta_query', $meta_query );
+			}
+
+			// Return the query.
+			return $query;
 		}
 
 		/**
