@@ -1,3 +1,6 @@
+= Version 1.0.31 - April 16, 2025 =
+* Test: WordPress version 6.8
+
 = Version 1.0.30 - December 12, 2024 =
 * Fix: Exclude restricted posts from GET and REST search queries
 
