@@ -3,7 +3,7 @@
  * Plugin Name:       Simple Page Access Restriction
  * Plugin URI:        https://www.pluginsandsnippets.com/downloads/simple-page-access-restriction/
  * Description:       This plugin offers a simple way to restrict visits to select pages only to logged-in users and allows for page redirection to a defined (login) page of your choice.
- * Version:           1.0.31
+ * Version:           1.0.32
  * Author:            Plugins & Snippets
  * Author URI:        https://www.pluginsandsnippets.com/
  * License:           GPL v2 or later
@@ -76,7 +76,7 @@ if ( ! class_exists( 'Simple_Page_Access_Restriction' ) ) {
 		private function setup_constants() {
 
 			// Plugin related constants
-			define( 'SIMPLE_PAGE_ACCESS_RESTRICTION_VER', '1.0.31' );
+			define( 'SIMPLE_PAGE_ACCESS_RESTRICTION_VER', '1.0.32' );
 			define( 'SIMPLE_PAGE_ACCESS_RESTRICTION_NAME', 'Simple Page Access Restriction' );
 			define( 'SIMPLE_PAGE_ACCESS_RESTRICTION_DIR', trailingslashit( plugin_dir_path( __FILE__ ) ) );
 			define( 'SIMPLE_PAGE_ACCESS_RESTRICTION_URL', plugin_dir_url( __FILE__ ) );

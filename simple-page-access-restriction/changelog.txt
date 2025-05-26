@@ -1,3 +1,6 @@
+= Version 1.0.32 - May 24, 2025 =
+* Security: Add nonce validation to settings and metabox handling
+
 = Version 1.0.31 - April 16, 2025 =
 * Test: WordPress version 6.8
 

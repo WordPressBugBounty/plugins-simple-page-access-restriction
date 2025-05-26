@@ -80,6 +80,7 @@ if ( ! class_exists( 'Simple_Page_Access_Restriction_Admin' ) ) {
 				$is_new_and_restricted = true;
 			}
 
+			wp_nonce_field( 'ps_simple_par_metabox_nonce', 'ps_simple_par_mb_nonce' );
 			
 			echo '<input type="checkbox" checked name="_page_access_restricted" value="0" style="display:none;" />';
 			echo 
@@ -92,6 +93,10 @@ if ( ! class_exists( 'Simple_Page_Access_Restriction_Admin' ) ) {
 		public function save_meta_box( $post_id, $post, $update ) {
 			if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 				return;
+			}
+
+			if ( ! isset( $_POST['ps_simple_par_mb_nonce'] ) || ! wp_verify_nonce( $_POST['ps_simple_par_mb_nonce'], 'ps_simple_par_metabox_nonce' ) ) {
+				return $post_id;
 			}
 
 			if ( isset( $_POST['_page_access_restricted'] ) ) {

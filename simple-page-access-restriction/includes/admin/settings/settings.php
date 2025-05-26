@@ -13,7 +13,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 global $wpdb;
 
-if ( isset( $_POST['ps_simple_par_save_settings'] ) ) {
+// Ensure user has access to this page.
+if ( ! current_user_can( 'manage_options' ) ) {
+	wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'simple-page-access-restriction' ) );
+}
+
+if ( isset( $_POST['ps_simple_par_save_settings'] ) && check_admin_referer( 'ps_simple_par_save_settings_action', 'ps_simple_par_nonce' ) ) {
 	// Define the input settings
 	$input_settings = array();
 
@@ -84,6 +89,7 @@ $pages    = $wpdb->get_results( "SELECT ID, post_title FROM {$wpdb->posts} WHERE
 	<h1><?php _e( 'Simple Page Access Restriction', 'simple-page-access-restriction' ); ?></h1>
 	<?php do_action( 'ps_simple_par_after_settings_title' ); ?>
 	<form method="post" action="">
+		<?php wp_nonce_field( 'ps_simple_par_save_settings_action', 'ps_simple_par_nonce' ); ?>
 		<div id="ps_plugin_template_settings_tabs">
 			<div id="simple-par-settings-tabs-header">
 				<a href="#ps_simple_par_settings_tab_1" class="simple-par-tab-active"><?php _e( 'Settings', 'simple-page-access-restriction' ); ?></a>
