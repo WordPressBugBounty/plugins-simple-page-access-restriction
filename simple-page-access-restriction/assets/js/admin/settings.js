@@ -51,7 +51,8 @@
 					dataType: 'JSON',
 					data: {
 						action: 'ps_simple_par_handle_subscription_request',
-						email: $( '.simple-par-subscription-form input' ).val(),
+						nonce: $( '.simple-par-subscription-form .simple-par-nonce' ).val(),
+						email: $( '.simple-par-subscription-form .simple-par-email' ).val(),
 						from_callout: 1,
 					},
 					success: function( data ) {

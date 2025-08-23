@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 function ps_simple_par_admin_render_inline_edit( $args ) {
 	?>
-	<fieldset class="inline-edit-col ps-simple-par-inline-edit" id="ps-simple-par-<?php echo esc_attr( str_replace( '_', '-', $args['edit_action'] ) ); ?>">
+	<fieldset class="inline-edit-col ps-simple-par-inline-edit" id="ps-simple-par-<?php echo esc_attr( str_replace( '_', '-', $args['edit_action'] ) ); ?>" style="display: none;">
 		<legend class="inline-edit-legend"><?php esc_html_e( 'Simple Page Access Restriction', 'simple-page-access-restriction' ); ?></legend>
 		<div class="inline-edit-col ps-simple-par-fields">
 			<input name="ps_simple_par_nonce_<?php echo esc_attr( $args['edit_action'] ); ?>" type="hidden" value="<?php echo esc_attr( wp_create_nonce( 'ps-simple-par-nonce' ) ); ?>">

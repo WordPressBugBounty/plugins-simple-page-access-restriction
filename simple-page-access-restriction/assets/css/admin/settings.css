@@ -117,7 +117,7 @@
 	align-items: center;
 }
 
-.simple-par-subscription-callout-main .simple-par-subscription-form input {
+.simple-par-subscription-callout-main .simple-par-subscription-form .simple-par-email {
 	width: 100%;
 	max-width: 350px;
 	margin-bottom: 0;

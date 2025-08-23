@@ -7,7 +7,7 @@ Tags: page restrict, access restriction, page restriction, page redirect, page a
 Requires at least: 3.9
 Tested up to: 6.8
 Requires PHP: 5.6
-Stable Tag: 1.0.32
+Stable Tag: 1.0.33
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 This plugin offers a simple way to restrict visits to select pages only to logged-in users and allows for page redirection to an existing login page.

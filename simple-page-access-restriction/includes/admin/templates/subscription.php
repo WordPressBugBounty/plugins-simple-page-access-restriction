@@ -14,7 +14,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<div class="simple-par-subscription-error" style="display: none;"><?php _e( 'There was an error in processing your request, please try again.', 'simple-page-access-restriction' ); ?></div>
 
 			<form method="POST" class="simple-par-subscription-form">
-				<input type="email" required value="<?php echo esc_attr( get_option( 'admin_email' ) ); ?>">
+				<input class="simple-par-nonce" name="nonce" type="hidden" value="<?php echo wp_create_nonce( 'ps_simple_par_subscription_nonce' ); ?>" />
+				<input class="simple-par-email" required type="email" value="<?php echo esc_attr( get_option( 'admin_email' ) ); ?>" />
 				
 				<div class="simple-par-subscription-actions">
 					<button class="button-primary"><?php _e( 'Subscribe', 'simple-page-access-restriction' ); ?></button>

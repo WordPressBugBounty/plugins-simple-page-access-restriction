@@ -150,6 +150,19 @@ if ( ! class_exists( 'Simple_Page_Access_Restriction_Admin' ) ) {
 		 * @return void
 		 */
 		public function process_subscription() {
+			// Check the nonce.
+			check_ajax_referer( 'ps_simple_par_subscription_nonce', 'nonce' );
+
+			// Check the user.
+			if ( ! is_user_logged_in() ) {
+				wp_die( __( 'You must be logged in to subscribe.', 'simple-page-access-restriction' ) );
+			}
+
+			// Check the capabities.
+			if ( ! current_user_can( 'manage_options' ) ) {
+				wp_die( __( 'You do not have sufficient permissions to subscribe.', 'simple-page-access-restriction' ) );
+			}
+
 			// Get the email from options
 			$email = get_option( 'admin_email' );
 			
