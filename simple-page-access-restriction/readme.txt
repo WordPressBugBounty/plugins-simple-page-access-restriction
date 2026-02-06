@@ -4,10 +4,10 @@ Author URI: https://www.pluginsandsnippets.com
 Plugin URI: https://wordpress.org/plugins/simple-page-access-restriction/
 Contributors: pluginsandsnippets, dilipsakariya, siawa, napoleaofw
 Tags: page restrict, access restriction, page restriction, page redirect, page access restriction
-Requires at least: 3.9
-Tested up to: 6.8
+Requires at least: 4.4
+Tested up to: 6.9
 Requires PHP: 5.6
-Stable Tag: 1.0.33
+Stable Tag: 1.0.34
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 This plugin offers a simple way to restrict visits to select pages only to logged-in users and allows for page redirection to an existing login page.
@@ -115,6 +115,12 @@ You may contact our [Support](https://www.pluginsandsnippets.com/contact/?utm_so
 
 
 == Changelog ==
+= Version 1.0.34 - January 15, 2026 =
+* Fix: Restriction of standard post taxonomies
+
+= Version 1.0.33 - August 23, 2025 =
+* Security: Fix CSRF issues
+
 = Version 1.0.32 - May 24, 2025 =
 * Security: Add nonce validation to settings and metabox handling
 

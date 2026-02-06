@@ -3,7 +3,7 @@
  * Plugin Name:       Simple Page Access Restriction
  * Plugin URI:        https://www.pluginsandsnippets.com/downloads/simple-page-access-restriction/
  * Description:       This plugin offers a simple way to restrict visits to select pages only to logged-in users and allows for page redirection to a defined (login) page of your choice.
- * Version:           1.0.33
+ * Version:           1.0.34
  * Author:            Plugins & Snippets
  * Author URI:        https://www.pluginsandsnippets.com/
  * License:           GPL v2 or later
@@ -76,7 +76,7 @@ if ( ! class_exists( 'Simple_Page_Access_Restriction' ) ) {
 		private function setup_constants() {
 
 			// Plugin related constants
-			define( 'SIMPLE_PAGE_ACCESS_RESTRICTION_VER', '1.0.33' );
+			define( 'SIMPLE_PAGE_ACCESS_RESTRICTION_VER', '1.0.34' );
 			define( 'SIMPLE_PAGE_ACCESS_RESTRICTION_NAME', 'Simple Page Access Restriction' );
 			define( 'SIMPLE_PAGE_ACCESS_RESTRICTION_DIR', trailingslashit( plugin_dir_path( __FILE__ ) ) );
 			define( 'SIMPLE_PAGE_ACCESS_RESTRICTION_URL', plugin_dir_url( __FILE__ ) );
@@ -203,7 +203,11 @@ if ( ! class_exists( 'Simple_Page_Access_Restriction' ) ) {
 				(
 					( ( is_page() || is_singular() ) && ps_simple_par_is_page_restricted( get_queried_object_id() ) ) ||
 					( function_exists( 'is_shop' ) && is_shop() && ps_simple_par_is_page_restricted( get_option( 'woocommerce_shop_page_id' ) ) ) || 
-					( is_array( $settings['taxonomies'] ) && ! empty( $settings['taxonomies'] ) && is_tax( $settings['taxonomies'] ) )
+					( is_array( $settings['taxonomies'] ) && ! empty( $settings['taxonomies'] ) && (
+					is_tax( $settings['taxonomies'] ) ||
+					( in_array( 'category', $settings['taxonomies'], true ) && is_category() ) ||
+					( in_array( 'post_tag', $settings['taxonomies'], true ) && is_tag() )
+				) )
 				)
 			) {
 				

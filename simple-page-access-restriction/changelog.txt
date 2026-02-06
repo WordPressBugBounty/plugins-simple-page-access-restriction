@@ -1,3 +1,6 @@
+= Version 1.0.34 - January 15, 2026 =
+* Fix: Restriction of standard post taxonomies
+
 = Version 1.0.33 - August 23, 2025 =
 * Security: Fix CSRF issues
 
