@@ -3,20 +3,25 @@
  * Plugin Name:       Simple Page Access Restriction
  * Plugin URI:        https://www.pluginsandsnippets.com/downloads/simple-page-access-restriction/
  * Description:       This plugin offers a simple way to restrict visits to select pages only to logged-in users and allows for page redirection to a defined (login) page of your choice.
- * Version:           1.0.34
+ * Version:           1.0.35
  * Author:            Plugins & Snippets
  * Author URI:        https://www.pluginsandsnippets.com/
  * License:           GPL v2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       simple-page-access-restriction
- * Requires at least: 3.9
- * Tested up to:      6.8
+ * Requires at least: 4.4
+ * Tested up to:      6.9
  *
  * @package           Simple_Page_Access_Restriction
  * @author            PluginsandSnippets.com
  * @copyright         All rights reserved Copyright (c) 2022, PluginsandSnippets.com
  *
  */
+
+use function PS_Simple_Page_Access_Restriction\Restrictions\handle_request;
+use function PS_Simple_Page_Access_Restriction\Restrictions\is_current_user_allowed;
+use function PS_Simple_Page_Access_Restriction\Restrictions\is_post_restricted;
+use function PS_Simple_Page_Access_Restriction\Restrictions\send_headers;
 
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) {
@@ -115,6 +120,16 @@ if ( ! class_exists( 'Simple_Page_Access_Restriction' ) ) {
 
 			require_once SIMPLE_PAGE_ACCESS_RESTRICTION_DIR . 'includes/functions.php';
 			require_once SIMPLE_PAGE_ACCESS_RESTRICTION_DIR . 'includes/class-redirection.php';
+
+			require_once SIMPLE_PAGE_ACCESS_RESTRICTION_DIR . 'includes/restrictions/users.php';
+			require_once SIMPLE_PAGE_ACCESS_RESTRICTION_DIR . 'includes/restrictions/functions.php';
+			require_once SIMPLE_PAGE_ACCESS_RESTRICTION_DIR . 'includes/restrictions/posts.php';
+			require_once SIMPLE_PAGE_ACCESS_RESTRICTION_DIR . 'includes/restrictions/terms.php';
+			require_once SIMPLE_PAGE_ACCESS_RESTRICTION_DIR . 'includes/restrictions/authors.php';
+			require_once SIMPLE_PAGE_ACCESS_RESTRICTION_DIR . 'includes/restrictions/singular.php';
+			require_once SIMPLE_PAGE_ACCESS_RESTRICTION_DIR . 'includes/restrictions/archive.php';
+			require_once SIMPLE_PAGE_ACCESS_RESTRICTION_DIR . 'includes/restrictions/other.php';
+			require_once SIMPLE_PAGE_ACCESS_RESTRICTION_DIR . 'includes/restrictions/seo.php';
 		}
 
 		/**
@@ -128,7 +143,8 @@ if ( ! class_exists( 'Simple_Page_Access_Restriction' ) ) {
 		private function hooks() {
 			add_action( 'init', array( $this, 'add_rest_api_filters' ) );
 			add_filter( 'pre_get_posts', array( $this, 'exclude_restricted_posts' ) );
-			add_action( 'template_redirect', array( $this, 'check_page_access' ), 1 );
+			add_action( 'send_headers', array( $this, 'on_send_headers' ) );
+			add_action( 'template_redirect', array( $this, 'on_template_redirect' ), 1 );
 		}
 
 		/**
@@ -187,65 +203,31 @@ if ( ! class_exists( 'Simple_Page_Access_Restriction' ) ) {
 		}
 
 		/**
-		 * Checks if current request is for a restricted page
-		 * If Yes, and Current User is not logged in then redirects
-		 * user to configured Login Page or to Homepage (if not cofigured)
-		 * 
+		 * Run on send_headers.
+		 */
+		public function on_send_headers() {
+			// Send the headers.
+			send_headers();
+		}
+
+		/**
+		 * Run on template redirect.
+		 *
 		 * @access      public
 		 * @since       1.0.0
 		 * @return      void
 		 */
-		public function check_page_access() {
-			$settings = ps_simple_par_get_settings();
-
-			if (
-				! is_user_logged_in() &&
-				(
-					( ( is_page() || is_singular() ) && ps_simple_par_is_page_restricted( get_queried_object_id() ) ) ||
-					( function_exists( 'is_shop' ) && is_shop() && ps_simple_par_is_page_restricted( get_option( 'woocommerce_shop_page_id' ) ) ) || 
-					( is_array( $settings['taxonomies'] ) && ! empty( $settings['taxonomies'] ) && (
-					is_tax( $settings['taxonomies'] ) ||
-					( in_array( 'category', $settings['taxonomies'], true ) && is_category() ) ||
-					( in_array( 'post_tag', $settings['taxonomies'], true ) && is_tag() )
-				) )
-				)
-			) {
-				
-				$redirect_url = '';
-				if ( 'url' === $settings['redirect_type'] && ! empty( $settings['redirect_url'] ) ) {
-					$redirect_url = $settings['redirect_url'];
-				} elseif ( 'page' === $settings['redirect_type'] && ! empty( $settings['login_page'] ) && ! ps_simple_par_is_page_restricted( $settings['login_page'] ) ) {
-					$redirect_url = get_permalink( $settings['login_page'] );
-				}
-
-				if ( empty( $redirect_url ) ) {
-					$redirect_url = home_url( '/' );
-				}
-
-				if ( ! empty( $settings['redirect_parameter'] ) ) {
-					// Remove unintentional '?' from the parameter name.
-					$settings['redirect_parameter'] = str_replace( '?', '', $settings['redirect_parameter'] );
-					
-					$redirect_url = add_query_arg( $settings['redirect_parameter'], urlencode( home_url() . $_SERVER['REQUEST_URI'] ), $redirect_url );
-				}
-
-				// Checks if headers have been sent.
-				if ( ! headers_sent() ) {
-					// Set headers to prevent caching.
-					nocache_headers();
-				}
-
-				wp_redirect( apply_filters( 'ps_simple_par_redirect_url', $redirect_url ) );
-				exit;
-			}
+		public function on_template_redirect() {
+			// Handle the request.
+			handle_request();
 		}
 
 		/**
 		 * Add the filters for REST API requests related to enabled post types.
 		 */
 		public function add_rest_api_filters() {
-			// Check if there is a logged-in user.
-			if ( is_user_logged_in() ) {
+			// Check if the current user is allowed.
+			if ( is_current_user_allowed() ) {
 				return;
 			}
 
@@ -306,7 +288,7 @@ if ( ! class_exists( 'Simple_Page_Access_Restriction' ) ) {
 		 */
 		public function filter_rest_response( $response, $post ) {
 			// Check the post.
-			if ( ps_simple_par_is_page_restricted( $post->ID ) ) {
+			if ( is_post_restricted( $post->ID ) ) {
 				// Set the response.
 				$response = new WP_REST_Response( null, 403 );
 			}

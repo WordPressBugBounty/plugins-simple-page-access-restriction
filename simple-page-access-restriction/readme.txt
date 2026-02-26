@@ -7,7 +7,7 @@ Tags: page restrict, access restriction, page restriction, page redirect, page a
 Requires at least: 4.4
 Tested up to: 6.9
 Requires PHP: 5.6
-Stable Tag: 1.0.34
+Stable Tag: 1.0.35
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 This plugin offers a simple way to restrict visits to select pages only to logged-in users and allows for page redirection to an existing login page.
@@ -115,6 +115,11 @@ You may contact our [Support](https://www.pluginsandsnippets.com/contact/?utm_so
 
 
 == Changelog ==
+= Version 1.0.35 - February 17 2026 =
+* Fix: Refactor restriction functions
+* New: Add noindex and nofollow directives
+* Test: WordPress version 6.9
+
 = Version 1.0.34 - January 15, 2026 =
 * Fix: Restriction of standard post taxonomies
 

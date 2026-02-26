@@ -1,5 +1,7 @@
 <?php
 
+use function PS_Simple_Page_Access_Restriction\Restrictions\is_post_restricted;
+
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -85,7 +87,7 @@ if ( ! class_exists( 'Simple_Page_Access_Restriction_Admin' ) ) {
 			echo '<input type="checkbox" checked name="_page_access_restricted" value="0" style="display:none;" />';
 			echo 
 				'<label ' . ( $is_same_as_login_redirect ? 'style="opacity:0.5;"' : '' ) . '>
-					<input type="checkbox" name="_page_access_restricted" value="1" ' . ( $is_same_as_login_redirect ? 'disabled' : '' ) . ' ' . ( ps_simple_par_is_page_restricted( $post->ID ) || $is_new_and_restricted ? 'checked' : '' ) . ' />
+					<input type="checkbox" name="_page_access_restricted" value="1" ' . ( $is_same_as_login_redirect ? 'disabled' : '' ) . ' ' . ( is_post_restricted( $post->ID ) || $is_new_and_restricted ? 'checked' : '' ) . ' />
 					<span>' . __( 'For Logged-In Users Only', 'simple-page-access-restriction' ) . '</span>
 				</label>';
 		}

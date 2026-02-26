@@ -152,17 +152,6 @@ if ( ! function_exists( 'ps_simple_par_get_settings' ) ) {
 	}
 }
 
-if ( ! function_exists( 'ps_simple_par_is_page_restricted' ) ) {
-	/**
-	 * Helper function for returning an array of saved settings
-	 *
-	 * @return array
-	 */
-	function ps_simple_par_is_page_restricted( $page_id ) {
-		return 1 === intval( get_post_meta( $page_id, 'page_access_restricted', true ) );
-	}
-}
-
 if ( ! function_exists( 'ps_simple_par_is_new_post_restricted' ) ) {
 	/**
 	 * Helper function for returning an array of saved settings

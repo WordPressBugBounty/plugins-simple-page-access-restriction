@@ -1,3 +1,8 @@
+= Version 1.0.35 - February 17 2026 =
+* Fix: Refactor restriction functions
+* New: Add noindex and nofollow directives
+* Test: WordPress version 6.9
+
 = Version 1.0.34 - January 15, 2026 =
 * Fix: Restriction of standard post taxonomies
 

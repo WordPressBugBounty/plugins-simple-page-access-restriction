@@ -6,6 +6,8 @@
  * @since       1.0.0
  */
 
+use function PS_Simple_Page_Access_Restriction\Restrictions\is_post_restricted;
+
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -56,7 +58,7 @@ if ( isset( $_POST['ps_simple_par_save_settings'] ) && check_admin_referer( 'ps_
 	prevent selection of such page
 	*/
 
-	if ( ps_simple_par_is_page_restricted( $setting_login_page ) ) {
+	if ( is_post_restricted( $setting_login_page ) ) {
 		$message = __( 'The page you selected is itself login protected. Please select a page which is unrestricted for guest visitors.', 'simple-page-access-restriction' );
 
 		// Set the login page

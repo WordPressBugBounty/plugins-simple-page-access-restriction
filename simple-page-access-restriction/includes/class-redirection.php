@@ -7,6 +7,8 @@
 
 namespace Simple_Page_Access_Restriction\Classes;
 
+use function PS_Simple_Page_Access_Restriction\Restrictions\is_post_restricted;
+
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -124,7 +126,7 @@ class Redirection {
 		}
 
 		// Check if the post is not restricted.
-		if ( ! ps_simple_par_is_page_restricted( $post_id ) ) {
+		if ( ! is_post_restricted( $post_id ) ) {
 			return;
 		}
 
